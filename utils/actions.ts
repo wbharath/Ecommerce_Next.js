@@ -25,4 +25,16 @@ export const fetchSingleProduct = async (productId: string) => {
   })
   if (!product) redirect('/products')
   return product
+export const fetchAllProducts = async({search = ''}:{search:string}) => {
+    return db.product.findMany({
+      where: {
+        OR: [
+          { name: { contains: search, mode: 'insensitive' } },
+          { company: { contains: search, mode: 'insensitive' } }
+        ]
+      },
+      orderBy: {
+        createdAt: 'desc'
+      }
+    })
 }
