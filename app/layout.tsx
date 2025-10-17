@@ -4,6 +4,7 @@ import './globals.css'
 import Container from '@/components/global/Container'
 import Navbar from '@/components/navbar/Navbar'
 import Providers from './providers'
+import { ClerkProvider } from '@clerk/nextjs'
 const geistSans = Geist({
   variable: '--font-geist-sans',
   subsets: ['latin']
@@ -26,15 +27,17 @@ export default function RootLayout({
 }>) {
   return (
     // need to remove this hyderation warning in prod
-    <html lang="en" suppressHydrationWarning>
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
-        <Providers>
-          <Navbar />
-          <Container className="py-20">{children}</Container>
-        </Providers>
-      </body>
-    </html>
+    <ClerkProvider>
+      <html lang="en" suppressHydrationWarning>
+        <body
+          className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        >
+          <Providers>
+            <Navbar />
+            <Container className="py-20">{children}</Container>
+          </Providers>
+        </body>
+      </html>
+    </ClerkProvider>
   )
 }
