@@ -1,4 +1,7 @@
+'use server'
+
 import db from '@/utils/db'
+import { currentUser } from '@clerk/nextjs/server'
 import { redirect } from 'next/navigation'
 
 export const fetchFeaturedProducts = async () => {
@@ -34,4 +37,37 @@ export const fetchSingleProduct = async (productId: string) => {
   })
   if (!product) redirect('/products')
   return product
+}
+
+export const createProductAction = async (
+  prevState: any,
+  formData: FormData
+): Promise<{ message: string }> => {
+  const user = await currentUser()
+  // temp
+  if (!user) redirect('/')
+  try {
+    const name = formData.get('name') as string
+    const company = formData.get('company') as string
+    const price = Number(formData.get('price') as string)
+    // temp
+    const image = formData.get('image') as File
+    const description = formData.get('description') as string
+    const featured = Boolean(formData.get('featured') as string)
+
+    await db.product.create({
+      data: {
+        name,
+        company,
+        price,
+        image: '/images/hero1.jpg',
+        description,
+        featured,
+        clerkId: user.id
+      }
+    })
+    return { message: 'product created' }
+  } catch (error) {
+    return { message: 'there was an error...' }
+  }
 }
