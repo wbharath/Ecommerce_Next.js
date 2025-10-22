@@ -153,5 +153,56 @@ export const updateProductImageAction = async (
   prevState: any,
   formData: FormData
 ) => {
-  return { message: 'Product Image updated successfully' }
+  await getAdminUser()
+  try {
+    const image = formData.get('image') as File
+    const productId = formData.get('id') as string
+    const oldImageUrl = formData.get('url') as string
+
+    // console.log('=== UPDATE IMAGE DEBUG ===')
+    // console.log('Product ID:', productId)
+    // console.log('Old Image URL:', oldImageUrl)
+    // console.log('New Image File:', {
+    //   name: image.name,
+    //   size: image.size,
+    //   type: image.type
+    // })
+
+    // Validate file
+    const validatedFile = validateWithZodSchema(imageSchema, { image })
+    // console.log('File validated successfully')
+
+    // Upload new image
+    // console.log('Starting upload...')
+    const fullPath = await uploadImage(validatedFile.image)
+    // console.log('Upload successful! New path:', fullPath)
+
+    // Delete old image
+    // console.log('Deleting old image...')
+    await deleteImg(oldImageUrl)
+    // console.log('Old image deleted')
+
+    // Update database
+    // console.log('Updating database...')
+    await db.product.update({
+      where: {
+        id: productId
+      },
+      data: {
+        image: fullPath
+      }
+    })
+    // console.log('Database updated!')
+
+    // revalidatePath('/products')
+    // revalidatePath(`/products/${productId}`)
+    // revalidatePath('/admin/products')
+    revalidatePath(`/admin/products/${productId}/edit`)
+
+    return { message: 'Product Image updated successfully' }
+  } catch (error) {
+    console.error('=== ERROR IN UPDATE IMAGE ===')
+    // console.error(error)
+    return handleError(error)
+  }
 }

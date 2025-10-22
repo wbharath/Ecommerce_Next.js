@@ -38,6 +38,7 @@ function ImageInputContainer(props: ImageInputContainerProps) {
       {isUpdateFormVisible && (
         <div className="max-w-md mt-4">
           <FormContainer action={action}>
+            {props.children}
             <ImageInput />
             <SubmitButton size="sm" text={text} />
           </FormContainer>
