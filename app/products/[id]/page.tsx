@@ -19,7 +19,7 @@ async function SingleProductPage({
   const product = await fetchSingleProduct(id)
   const { name, image, company, description, price } = product
   const dollarsAmount = formatCurrency(price)
-  const { userId } = auth()
+  const { userId } = await auth()
   const reviewDoesNotExist =
     userId && !(await findExistingReview(userId, product.id))
   return (
