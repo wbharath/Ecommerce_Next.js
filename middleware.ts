@@ -5,14 +5,21 @@ const isPublicRoute = createRouteMatcher(['/', '/products(.*)', '/about'])
 
 const isAdminRoute = createRouteMatcher(['/admin(.*)'])
 
-export default clerkMiddleware((auth, req) => {
-  // console.log(auth().userId);
-  const isAdminUser = auth().userId === process.env.ADMIN_USER_ID
+export default clerkMiddleware(async (auth, req) => {
+  const { userId } = await auth()
+
+  const isAdminUser = userId === process.env.ADMIN_USER_ID
+
   if (isAdminRoute(req) && !isAdminUser) {
     return NextResponse.redirect(new URL('/', req.url))
   }
 
-  if (!isPublicRoute(req)) auth().protect()
+  // Protect non-public routes by checking if user is signed in
+  if (!isPublicRoute(req) && !userId) {
+    const signInUrl = new URL('/sign-in', req.url)
+    signInUrl.searchParams.set('redirect_url', req.url)
+    return NextResponse.redirect(signInUrl)
+  }
 })
 
 export const config = {
