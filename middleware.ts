@@ -5,22 +5,24 @@ const isPublicRoute = createRouteMatcher(['/', '/products(.*)', '/about'])
 const isAdminRoute = createRouteMatcher(['/admin(.*)'])
 
 export default clerkMiddleware(async (auth, req) => {
-  const { userId } = await auth() // Make async and await
+  const session = await auth()
 
-  const isAdminUser = userId === process.env.ADMIN_USER_ID
-
-  if (isAdminRoute(req) && !isAdminUser) {
-    return NextResponse.redirect(new URL('/', req.url))
+  // Admin route check
+  if (isAdminRoute(req)) {
+    if (session.userId !== process.env.ADMIN_USER_ID) {
+      return NextResponse.redirect(new URL('/', req.url))
+    }
   }
 
-  // For protected routes, redirect to sign-in if not authenticated
-  if (!isPublicRoute(req) && !userId) {
-    const signInUrl = new URL('/sign-in', req.url)
-    signInUrl.searchParams.set('redirect_url', req.url)
-    return NextResponse.redirect(signInUrl)
+  // Protected route check
+  if (!isPublicRoute(req) && !session.userId) {
+    return NextResponse.redirect(new URL('/sign-in', req.url))
   }
 })
 
 export const config = {
-  matcher: ['/((?!.*\\..*|_next).*)', '/', '/(api|trpc)(.*)']
+  matcher: [
+    '/((?!_next|[^?]*\\.(?:html?|css|js(?!on)|jpe?g|webp|png|gif|svg|ttf|woff2?|ico|csv|docx?|xlsx?|zip|webmanifest)).*)',
+    '/(api|trpc)(.*)'
+  ]
 }
