@@ -28,7 +28,7 @@ export default function RootLayout({
   return (
     // need to remove this hyderation warning in prod
     <ClerkProvider>
-      <html lang="en" suppressHydrationWarning>
+      <html lang="en">
         <body
           className={`${geistSans.variable} ${geistMono.variable} antialiased`}
         >
