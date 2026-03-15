@@ -1,7 +1,6 @@
 import type { NextConfig } from 'next'
 
 const nextConfig: NextConfig = {
-  /* config options here */
   images: {
     remotePatterns: [
       {
@@ -18,18 +17,7 @@ const nextConfig: NextConfig = {
       }
     ]
   },
-  webpack: (config) => {
-    config.resolve.fallback = {
-      ...config.resolve.fallback
-    }
-
-    // Allow default imports for SWR
-    config.resolve.extensionAlias = {
-      '.js': ['.ts', '.tsx', '.js', '.jsx']
-    }
-
-    return config
-  },
+  turbopack: {},
   transpilePackages: ['@clerk/clerk-react', '@clerk/shared']
 }
 
