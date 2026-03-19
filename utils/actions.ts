@@ -1,7 +1,7 @@
 'use server'
 
 import db from '@/utils/db'
-import { auth, currentUser, getAuth } from '@clerk/nextjs/server'
+import { auth, currentUser } from '@clerk/nextjs/server'
 import { redirect } from 'next/navigation'
 import {
   imageSchema,

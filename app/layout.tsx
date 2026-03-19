@@ -26,18 +26,17 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    // need to remove this hyderation warning in prod
-    <ClerkProvider>
-      <html lang="en">
-        <body
-          className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-        >
+    <html lang="en">
+      <body
+        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+      >
+        <ClerkProvider>
           <Providers>
             <Navbar />
             <Container className="py-20">{children}</Container>
           </Providers>
-        </body>
-      </html>
-    </ClerkProvider>
+        </ClerkProvider>
+      </body>
+    </html>
   )
 }

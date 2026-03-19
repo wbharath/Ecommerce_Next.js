@@ -17,8 +17,7 @@ const nextConfig: NextConfig = {
       }
     ]
   },
-  turbopack: {},
-  transpilePackages: ['@clerk/clerk-react', '@clerk/shared']
+  turbopack: {}
 }
 
 export default nextConfig
