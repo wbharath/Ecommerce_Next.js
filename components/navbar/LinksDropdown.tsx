@@ -11,7 +11,7 @@ import { Button } from '../ui/button'
 import { links } from '@/utils/links'
 import UserIcon from './UserIcon'
 
-import { SignedOut, SignInButton, SignUpButton, SignedIn } from '@clerk/nextjs'
+import { Show, SignInButton, SignUpButton } from '@clerk/nextjs'
 import SignOutLink from './SignOutLink'
 import { auth } from '@clerk/nextjs/server'
 
@@ -27,7 +27,7 @@ async function LinksDropdown() {
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-40" align="start" sideOffset={10}>
-        <SignedOut>
+        <Show when="signed-out">
           <DropdownMenuItem>
             <SignInButton mode="modal">
               <button className="w-full text-left">Login</button>
@@ -39,8 +39,8 @@ async function LinksDropdown() {
               <button className="w-full text-left">Register</button>
             </SignUpButton>
           </DropdownMenuItem>
-        </SignedOut>
-        <SignedIn>
+        </Show>
+        <Show when="signed-in">
           {links.map((link) => {
             if (link.label === 'dashboard' && !isAdmin) return null
             return (
@@ -55,7 +55,7 @@ async function LinksDropdown() {
           <DropdownMenuItem>
             <SignOutLink />
           </DropdownMenuItem>
-        </SignedIn>
+        </Show>
       </DropdownMenuContent>
     </DropdownMenu>
   )
